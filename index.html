@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividades: Função Quadrática</title>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code', 'annotation', 'annotation-xml']
+            },
+            chtml: { scale: 1.0 }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <style>
+        :root {
+            --primary-color: #0b2545;
+            --bg-color: #ffffff;
+            --option-bg: #f8f9fa;
+            --correct-color: #2b8a3e;
+            --wrong-color: #c92a2a;
+            --correct-bg: #ebfbee;
+            --wrong-bg: #fff5f5;
+            --accent-color: #1a73e8;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg-color); color: #000;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .container {
+            width: 95vw; height: 95vh; max-width: 1250px; max-height: 880px;
+            display: flex; flex-direction: column; justify-content: center;
+            box-sizing: border-box; padding: 10px; text-align: center;
+        }
+
+        /* MENU INICIAL */
+        #menu-screen { display: flex; flex-direction: column; gap: 12px; align-items: center;}
+        .menu-title { font-size: 40px; color: var(--primary-color); margin-bottom: 5px; font-weight: bold; }
+        .menu-btn {
+            width: 65%; padding: 12px 24px; font-size: 21px; font-weight: bold;
+            color: white; background-color: var(--accent-color);
+            border: none; border-radius: 12px; cursor: pointer;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.15); transition: 0.2s;
+        }
+        .menu-btn:hover { transform: scale(1.02); background-color: var(--primary-color); }
+
+        /* ÁREA DE JOGO */
+        #game-area { display: none; flex-direction: column; height: 100%; justify-content: space-between; }
+        .header h1 { font-size: 26px; margin: 5px 0; color: var(--primary-color); }
+        .progress-text { font-size: 20px; font-weight: bold; color: #555; }
+        
+        .equation-display {
+            background-color: var(--primary-color); color: white;
+            padding: 20px; border-radius: 15px; font-size: 65px; margin-bottom: 10px;
+            display: flex; justify-content: center; align-items: center; min-height: 120px;
+        }
+        .equation-display > div {
+            width: 100%;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        /* GRID DE OPÇÕES */
+        .options-grid { display: grid; gap: 15px; margin-bottom: 15px; flex-grow: 1; }
+        .grid-4 { grid-template-columns: 1fr 1fr; }
+        .grid-2 { grid-template-columns: 1fr 1fr; }
+
+        .option-btn {
+            background-color: var(--option-bg); border: 4px solid #ced4da;
+            border-radius: 15px; font-size: 26px; font-weight: bold;
+            cursor: pointer; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; transition: 0.15s;
+            padding: 10px;
+        }
+        .option-btn.correct { background-color: var(--correct-bg)!important; border-color: var(--correct-color)!important; color: var(--correct-color)!important; }
+        .option-btn.wrong { background-color: var(--wrong-bg)!important; border-color: var(--wrong-color)!important; color: var(--wrong-color)!important; }
+        .option-btn.disabled { cursor: not-allowed; opacity: 0.8; }
+        
+        .delta-text { font-size: 22px; font-weight: normal; margin-top: 5px; color: #333; }
+        .option-btn.correct .delta-text { color: var(--correct-color); }
+        .option-btn.wrong .delta-text { color: var(--wrong-color); }
+
+        .feedback-banner { font-size: 32px; font-weight: bold; min-height: 45px; margin-bottom: 5px; }
+
+        /* ÍCONES DE CONCAVIDADE */
+        .parabola-icon { 
+            width: 90px; height: 45px; margin-bottom: 15px; 
+            border: 5px solid currentColor; border-top: none; 
+            border-radius: 0 0 50px 50px; box-sizing: border-box;
+        }
+        .down { transform: rotate(180deg); }
+
+        /* BOTÕES DE NAVEGAÇÃO */
+        .footer { display: flex; justify-content: center; gap: 20px; }
+        .btn-next {
+            background-color: var(--accent-color); color: white; border: none;
+            padding: 15px 40px; font-size: 26px; font-weight: bold;
+            border-radius: 40px; cursor: pointer; transition: 0.2s;
+        }
+        .btn-next:disabled { background-color: #dee2e6; color: #adb5bd; cursor: not-allowed; }
+        .btn-next:not(:disabled):hover { background-color: #1557b0; }
+
+        .btn-back {
+            background-color: #6c757d; color: white; border: none;
+            padding: 15px 40px; font-size: 26px; font-weight: bold;
+            border-radius: 40px; cursor: pointer; transition: 0.2s;
+        }
+        .btn-back:hover { background-color: #495057; }
+
+        /* RESULTADOS */
+        #result-screen { display: none; flex-direction: column; gap: 20px; align-items: center;}
+        .final-score { font-size: 100px; font-weight: bold; color: var(--correct-color); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="menu-screen">
+        <div class="menu-title">Atividades: Função Quadrática</div>
+        <button class="menu-btn" onclick="startActivity(1)">1. Identificar Coeficientes \(\;(a, b, c)\)</button>
+        <button class="menu-btn" onclick="startActivity(2)">2. Identificar Concavidade \(\;(a > 0 \text{ ou } a < 0)\)</button>
+        <button class="menu-btn" onclick="startActivity(3)">3. Calcular o \(\Delta\) e as Raízes</button>
+        <button class="menu-btn" style="background-color: #d97706;" onclick="startActivity(4)">4. Questões de Vestibular</button>
+        <button class="menu-btn" style="background-color: #10b981;" onclick="startActivity(5)">5. Cálculo de Raízes (Contextualizadas)</button>
+        <button class="menu-btn" style="background-color: #ec4899;" onclick="startActivity(6)">6. Pontos de Máximo e Mínimo (Vértice)</button>
+    </div>
+
+    <div id="game-area">
+        <div class="header">
+            <div class="progress-text" id="progress-text">Questão 1 de X</div>
+            <h1 id="activity-title">Atividade</h1>
+        </div>
+        
+        <div id="equation-text" class="equation-display"></div>
+        <div id="feedback-banner" class="feedback-banner"></div>
+        <div id="options-grid" class="options-grid"></div>
+
+        <div class="footer">
+            <button class="btn-back" onclick="voltarMenu()">⬅ VOLTAR AO MENU</button>
+            <button class="btn-next" id="btn-next" onclick="nextQuestion()" disabled>AVANÇAR ➔</button>
+        </div>
+    </div>
+
+    <div id="result-screen">
+        <h2 style="font-size: 45px; margin-bottom:0;">Atividade Concluída!</h2>
+        <div class="final-score" id="final-score">0 / 10</div>
+        <button class="menu-btn" style="width: 50%;" onclick="voltarMenu()">VOLTAR AO MENU</button>
+    </div>
+</div>
+
+<script>
+    const atividade1 = [
+        { q: "\\[ f(x) = 3x^2 - 4x + 1 \\]", options: ["\\( a = 3, \\; b = -4, \\; c = 1 \\)", "\\( a = 3, \\; b = 4, \\; c = 1 \\)", "\\( a = -4, \\; b = 3, \\; c = 1 \\)", "\\( a = 1, \\; b = -4, \\; c = 3 \\)"], correct: 0 },
+        { q: "\\[ f(x) = -x^2 + 7x - 2 \\]", options: ["\\( a = 1, \\; b = 7, \\; c = -2 \\)", "\\( a = -1, \\; b = 7, \\; c = -2 \\)", "\\( a = -1, \\; b = -7, \\; c = -2 \\)", "\\( a = -2, \\; b = 7, \\; c = -1 \\)"], correct: 1 },
+        { q: "\\[ f(x) = x^2 - 9 \\]", options: ["\\( a = 1, \\; b = -9, \\; c = 0 \\)", "\\( a = 0, \\; b = 1, \\; c = -9 \\)", "\\( a = 1, \\; b = 0, \\; c = -9 \\)", "\\( a = 1, \\; b = 1, \\; c = -9 \\)"], correct: 2 },
+        { q: "\\[ f(x) = 5x^2 + 2x \\]", options: ["\\( a = 5, \\; b = 2, \\; c = 0 \\)", "\\( a = 5, \\; b = 0, \\; c = 2 \\)", "\\( a = 2, \\; b = 5, \\; c = 0 \\)", "\\( a = 5, \\; b = 2, \\; c = 1 \\)"], correct: 0 },
+        { q: "\\[ f(x) = -4x^2 \\]", options: ["\\( a = 4, \\; b = 0, \\; c = 0 \\)", "\\( a = -4, \\; b = 1, \\; c = 1 \\)", "\\( a = 0, \\; b = 0, \\; c = -4 \\)", "\\( a = -4, \\; b = 0, \\; c = 0 \\)"], correct: 3 },
+        { q: "\\[ f(x) = 2 + 5x - x^2 \\]", options: ["\\( a = 2, \\; b = 5, \\; c = -1 \\)", "\\( a = -1, \\; b = 5, \\; c = 2 \\)", "\\( a = 1, \\; b = 5, \\; c = 2 \\)", "\\( a = -1, \\; b = 2, \\; c = 5 \\)"], correct: 1 },
+        { q: "\\[ f(x) = 10x - 2x^2 + 8 \\]", options: ["\\( a = 10, \\; b = -2, \\; c = 8 \\)", "\\( a = -2, \\; b = 8, \\; c = 10 \\)", "\\( a = -2, \\; b = 10, \\; c = 8 \\)", "\\( a = 2, \\; b = 10, \\; c = 8 \\)"], correct: 2 },
+        { q: "\\[ f(x) = x^2 + x + 1 \\]", options: ["\\( a = 1, \\; b = 1, \\; c = 1 \\)", "\\( a = 0, \\; b = 1, \\; c = 1 \\)", "\\( a = 1, \\; b = 1, \\; c = 0 \\)", "\\( a = x, \\; b = x, \\; c = 1 \\)"], correct: 0 },
+        { q: "\\[ f(x) = -3x^2 - 5 \\]", options: ["\\( a = -3, \\; b = -5, \\; c = 0 \\)", "\\( a = -3, \\; b = 0, \\; c = -5 \\)", "\\( a = 3, \\; b = 0, \\; c = -5 \\", "\\( a = -3, \\; b = 1, \\; c = -5 \\)"], correct: 1 },
+        { q: "\\[ f(x) = \\frac{1}{2}x^2 - 4x + 12 \\]", options: ["\\( a = 1, \\; b = -4, \\; c = 12 \\)", "\\( a = 5, \\; b = -4, \\; c = 12 \\)", "\\( a = \\frac{1}{2}, \\; b = -4, \\; c = 12 \\)", "\\( a = 12, \\; b = -4, \\; c = \\frac{1}{2} \\)"], correct: 2 }
+    ];
+
+    const atividade2 = [
+        { q: "\\[ f(x) = x^2 - 5x + 6 \\]", options: ["Concavidade para CIMA", "Concavidade para BAIXO"], correct: 0 },
+        { q: "\\[ f(x) = -2x^2 + 8x \\]", options: ["Concavidade para CIMA", "Concavidade para BAIXO"], correct: 1 },
+        { q: "\\[ f(x) = -x^2 - 1 \\]", options: ["Concavidade para CIMA", "Concavidade para BAIXO"], correct: 1 },
+        { q: "\\[ f(x) = 4x^2 + 3 \\]", options: ["Concavidade para CIMA", "Concavidade para BAIXO"], correct: 0 },
+        { q: "\\[ f(x) = 10 - x^2 \\]", options: ["Concavidade para CIMA", "Concavidade para BAIXO"], correct: 1 },
+        { q: "\\[ f(x) = \\frac{1}{3}x^2 + x \\]", options: ["Concavidade para CIMA", "Concavidade para BAIXO"], correct: 0 },
+        { q: "\\[ f(x) = 2x + 3x^2 + 1 \\]", options: ["Concavidade para CIMA", "Concavidade para BAIXO"], correct: 0 },
+        { q: "\\[ f(x) = -0{,}5x^2 - 4 \\]", options: ["Concavidade para CIMA", "Concavidade para BAIXO"], correct: 1 },
+        { q: "\\[ f(x) = x^2 \\]", options: ["Concavidade para CIMA", "Concavidade para BAIXO"], correct: 0 },
+        { q: "\\[ f(x) = 5 - 4x^2 \\]", options: ["Concavidade para CIMA", "Concavidade para BAIXO"], correct: 1 }
+    ];
+
+    const atividade3 = [
+        { q: "\\[ f(x) = x^2 - 5x + 6 \\]", options: ["\\( \\Delta = 1 \\)<br><span class='delta-text'>Duas raízes reais distintas</span>", "\\( \\Delta = 1 \\)<br><span class='delta-text'>Nenhuma raiz real</span>", "\\( \\Delta = 49 \\)<br><span class='delta-text'>Duas raízes reais distintas</span>", "\\( \\Delta = -1 \\)<br><span class='delta-text'>Nenhuma raiz real</span>"], correct: 0 },
+        { q: "\\[ f(x) = x^2 + 2x + 5 \\]", options: ["\\( \\Delta = 24 \\)<br><span class='delta-text'>Duas raízes reais distintas</span>", "\\( \\Delta = -16 \\)<br><span class='delta-text'>Uma raiz real (raízes iguais)</span>", "\\( \\Delta = -16 \\)<br><span class='delta-text'>Nenhuma raiz real</span>", "\\( \\Delta = 0 \\)<br><span class='delta-text'>Uma raiz real (raízes iguais)</span>"], correct: 2 },
+        { q: "\\[ f(x) = x^2 - 4x + 4 \\]", options: ["\\( \\Delta = 0 \\)<br><span class='delta-text'>Uma raiz real (raízes iguais)</span>", "\\( \\Delta = 16 \\)<br><span class='delta-text'>Duas raízes reais distintas</span>", "\\( \\Delta = 0 \\)<br><span class='delta-text'>Nenhuma raiz real</span>", "\\( \\Delta = -16 \\)<br><span class='delta-text'>Nenhuma raiz real</span>"], correct: 0 },
+        { q: "\\[ f(x) = 2x^2 - 3x - 2 \\]", options: ["\\( \\Delta = -7 \\)<br><span class='delta-text'>Nenhuma raiz real</span>", "\\( \\Delta = 25 \\)<br><span class='delta-text'>Duas raízes reais distintas</span>", "\\( \\Delta = 0 \\)<br><span class='delta-text'>Uma raiz real (raízes iguais)</span>", "\\( \\Delta = 25 \\)<br><span class='delta-text'>Uma raiz real (raízes iguais)</span>"], correct: 1 },
+        { q: "\\[ f(x) = -2x^2 + x - 3 \\]", options: ["\\( \\Delta = 25 \\)<br><span class='delta-text'>Duas raízes reais distintas</span>", "\\( \\Delta = -23 \\)<br><span class='delta-text'>Nenhuma raiz real</span>", "\\( \\Delta = -23 \\)<br><span class='delta-text'>Uma raiz real (raízes iguais)</span>", "\\( \\Delta = -25 \\)<br><span class='delta-text'>Nenhuma raiz real</span>"], correct: 1 },
+        { q: "\\[ f(x) = 4x^2 - 12x + 9 \\]", options: ["\\( \\Delta = 144 \\)<br><span class='delta-text'>Duas raízes reais distintas</span>", "\\( \\Delta = 0 \\)<br><span class='delta-text'>Duas raízes reais distintas</span>", "\\( \\Delta = -144 \\)<br><span class='delta-text'>Nenhuma raiz real</span>", "\\( \\Delta = 0 \\)<br><span class='delta-text'>Uma raiz real (raízes iguais)</span>"], correct: 3 },
+        { q: "\\[ f(x) = -x^2 + 4x - 3 \\]", options: ["\\( \\Delta = -4 \\)<br><span class='delta-text'>Nenhuma raiz real</span>", "\\( \\Delta = 4 \\)<br><span class='delta-text'>Uma raiz real (raízes iguais)</span>", "\\( \\Delta = 4 \\)<br><span class='delta-text'>Duas raízes reais distintas</span>", "\\( \\Delta = 28 \\)<br><span class='delta-text'>Duas raízes reais distintas</span>"], correct: 2 },
+        { q: "\\[ f(x) = 3x^2 - 2x + 1 \\]", options: ["\\( \\Delta = 16 \\)<br><span class='delta-text'>Duas raízes reais distintas</span>", "\\( \\Delta = -8 \\)<br><span class='delta-text'>Uma raiz real (raízes iguais)</span>", "\\( \\Delta = 8 \\)<br><span class='delta-text'>Duas raízes reais distintas</span>", "\\( \\Delta = -8 \\)<br><span class='delta-text'>Nenhuma raiz real</span>"], correct: 3 },
+        { q: "\\[ f(x) = -x^2 + 6x - 9 \\]", options: ["\\( \\Delta = 36 \\)<br><span class='delta-text'>Duas raízes reais distintas</span>", "\\( \\Delta = 0 \\)<br><span class='delta-text'>Uma raiz real (raízes iguais)</span>", "\\( \\Delta = -72 \\)<br><span class='delta-text'>Nenhuma raiz real</span>", "\\( \\Delta = 0 \\)<br><span class='delta-text'>Duas raízes reais distintas</span>"], correct: 1 },
+        { q: "\\[ f(x) = x^2 - 6x + 9 \\]", options: ["\\( \\Delta = 0 \\)<br><span class='delta-text'>Uma raiz real (raízes iguais)</span>", "\\( \\Delta = 36 \\)<br><span class='delta-text'>Duas raízes reais distintas</span>", "\\( \\Delta = -36 \\)<br><span class='delta-text'>Nenhuma raiz real</span>", "\\( \\Delta = 0 \\)<br><span class='delta-text'>Nenhuma raiz real</span>"], correct: 0 }
+    ];
+
+    const atividade4 = [
+        { q: "Seja a função dada por \\( f(x) = -x^2 + 4x + 5 \\). Podemos afirmar com certeza que a sua parábola possui:", options: ["Concavidade para baixo e intercepta o eixo y em \\( (0, 5) \\)", "Concavidade para cima e intercepta o eixo y em \\( (0, 5) \\)", "Concavidade para baixo e intercepta o eixo y em \\( (0, -5) \\)", "Concavidade para cima e intercepta o eixo y em \\( (0, -1) \\)"], correct: 0 },
+        { q: "(UNESP) A função quadrática \\( f(x) = x^2 - 6x + 9 \\) possui:", options: ["Duas raízes reais e distintas", "Nenhuma raiz real", "Uma única raiz real (raízes iguais)", "Infinitas raízes reais"], correct: 2 },
+        { q: "Para que a função quadrática definida por \\( f(x) = mx^2 - 2x + 3 \\) possua a concavidade voltada para cima, devemos ter:", options: ["\\( m < 0 \\)", "\\( m > 0 \\)", "\\( m = 0 \\)", "\\( m > 2 \\)"], correct: 1 },
+        { q: "(FUVEST) Analisando o discriminante da equação \\( x^2 - 5x + 7 = 0 \\), qual é o valor de \\( \\Delta \\) e a quantidade de raízes reais?", options: ["\\( \\Delta = -3 \\), nenhuma raiz real", "\\( \\Delta = 3 \\), duas raízes distintas", "\\( \\Delta = 0 \\), uma raiz real", "\\( \\Delta = -4 \\), nenhuma raiz real"], correct: 0 },
+        { q: "O gráfico de uma função polinomial do 2º grau intercepta o eixo das ordenadas (eixo \\(y\\)) exatamente no coeficiente \\(c\\). Onde a função \\( f(x) = 2x^2 - 3x - 4 \\) intercepta esse eixo?", options: ["No ponto \\( (-4, 0) \\)", "No ponto \\( (0, 2) \\)", "No ponto \\( (0, -3) \\)", "No ponto \\( (0, -4) \\)"], correct: 3 },
+        { q: "Se o discriminante (\\( \\Delta \\)) de uma função quadrática for igual a \\( 16 \\), o que podemos deduzir sobre o seu gráfico em relação ao eixo \\(x\\)?", options: ["A parábola tangencia o eixo \\(x\\) em um único ponto", "A parábola intercepta o eixo \\(x\\) em dois pontos distintos", "A parábola não cruza e nem toca o eixo \\(x\\)", "A parábola confunde-se com o próprio eixo \\(x\\)"], correct: 1 },
+        { q: "Identifique corretamente os três coeficientes numéricos da função incompleta descrita por \\( f(x) = -3x^2 + 12 \\):", options: ["\\( a = -3, \\; b = 0, \\; c = 12 \\)", "\\( a = -3, \\; b = 12, \\; c = 0 \\)", "\\( a = 0, \\; b = -3, \\; c = 12 \\)", "\\( a = -3, \\; b = 0, \\; c = -12 \\)"], correct: 0 },
+        { q: "A função real definida pela lei \\( f(x) = (2 - k)x^2 - 5x + 1 \\) terá sua concavidade voltada para baixo se, e somente se:", options: ["\\( k < 2 \\)", "\\( k = 2 \\)", "\\( k > 2 \\)", "\\( k > 0 \\)"], correct: 2 },
+        { q: "Calcule o valor do discriminante (\\( \\Delta \\)) para a função quadrática dada por \\( f(x) = -x^2 + 2x - 1 \\):", options: ["\\( a = 8 \\)", "\\( \\Delta = 0 \\)", "\\( \\Delta = -4 \\)", "\\( \\Delta = 4 \\)"], correct: 1 },
+        { q: "(MACKENZIE) A parábola correspondente à função \\( f(x) = 3x^2 - 2x + 1 \\) intercepta o eixo das abscissas (eixo \\(x\\)) em:", options: ["Nenhum ponto", "Apenas um ponto", "Dois pontos distintos", "Três pontos diferentes"], correct: 0 }
+    ];
+
+    const atividade5 = [
+        { q: "Um projétil é lançado e sua trajetória descreve uma parábola dada pela função \\( h(t) = -t^2 + 6t \\), onde \\( h \\) é a altura em metros e \\( t \\) é o tempo em segundos após o lançamento. Desconsiderando o ponto de partida (t = 0), após quanto tempo o projétil atinge o solo novamente?", options: ["3 segundos", "6 segundos", "9 segundos", "12 segundos"], correct: 1 },
+        { q: "O lucro mensal de uma pequena empresa é modelado pela função \\( L(x) = -2x^2 + 16x - 24 \\), onde \\( x \\) é a quantidade de peças vendidas (em milhares) e \\( L(x) \\) é o lucro em milhares de reais. Quais são as quantidades de peças vendidas que levam a empresa ao ponto de equilíbrio (lucro igual a zero)?", options: ["2 mil e 6 mil peças", "3 mil e 4 mil peças", "1 mil e 5 mil peças", "2 mil e 4 mil peças"], correct: 0 },
+        { q: "A entrada de um túnel tem o formato de um arco de parábola dado pela equação \\( y = -x^2 + 4 \\), onde \\( y \\) é a altura e \\( x \\) é a distância horizontal a partir do centro do túnel. Quais são as coordenadas horizontais \\( x \\) dos pontos onde a base do túnel toca o solo?", options: ["\\( x = -4 \\) e \\( x = 4 \\)", "\\( x = 0 \\) e \\( x = 4 \\)", "\\( x = -1 \\) e \\( x = 1 \\)", "\\( x = -2 \\) e \\( x = 2 \\)"], correct: 3 },
+        { q: "O custo de produção de \\( x \\) toneladas de certo fertilizante químico é expresso por \\( C(x) = x^2 - 10x + 21 \\) (em milhares de reais). Para quais valores de produção, em toneladas, o custo é nulo?", options: ["2 e 8 toneladas", "4 e 5 toneladas", "3 e 7 toneladas", "1 e 21 toneladas"], correct: 2 },
+        { q: "O salto de um golfinho para fora da água segue uma trajetória parabólica descrita por \\( h(d) = -0{,}2d^2 + d \\), onde \\( h \\) é a altura alcançada e \\( d \\) é a distância horizontal percorrida desde o início do salto (ambas em metros). Qual é a distância horizontal total percorrida pelo golfinho do início ao fim do salto?", options: ["5 metros", "4 metros", "6 metros", "2 metros"], correct: 0 },
+        { q: "A temperatura \\( T \\) (em graus Celsius) durante as primeiras horas da manhã em uma cidade foi modelada por \\( T(t) = t^2 - 8t + 12 \\), onde \\( t \\) representa o tempo em horas decorridas desde a meia-noite. Em quais horários da madrugada a temperatura atingiu exatamente \\( 0^\\circ\\text{C} \\)?", options: ["Às 3h e às 4h", "Às 2h e às 6h", "Às 1h e às 7h", "Às 2h e às 4h"], correct: 1 },
+        { q: "A população de uma colônia de bactérias sob a ação de um novo antibiótico varia com o tempo \\( t \\) (em horas) segundo a lei \\( P(t) = -5t^2 + 20t + 25 \\). Após quanto tempo do início do experimento a colônia será completamente extinta?", options: ["4 horas", "25 horas", "5 horas", "3 horas"], correct: 2 },
+        { q: "O cabo de uma estrutura metálica suspensa segue a curvatura de uma parábola dada pela função \\( y = 0{,}05x^2 - 2x + 15 \\). Em quais distâncias horizontais \\( x \\) do início da estrutura o cabo atinge o nível do solo (onde \\( y = 0 \\))?", options: ["Nos pontos 5 m e 15 m", "Nos pontos 20 m e 40 m", "Nos pontos 15 m e 25 m", "Nos pontos 10 m e 30 m"], correct: 3 },
+        { q: "Um fazendeiro planeja delimitar uma área retangular para plantio. A área do terreno em função da largura da cerca, \\( x \\), é dada pela função quadrática \\( A(x) = -2x^2 + 40x \\). Para quais valores de largura \\( x \\) a área do terreno seria nula?", options: ["0 metros e 20 metros", "0 metros e 40 metros", "10 metros e 30 metros", "5 metros e 15 metros"], correct: 0 },
+        { q: "Um foguete de brinquedo é lançado verticalmente e sua altura \\( h \\) (em metros) após \\( t \\) segundos de voo é expressa por \\( h(t) = -5t^2 + 45t \\). Desconsiderando a altura da plataforma de lançamento, após quantos segundos o foguete cai de volta no chão?", options: ["5 segundos", "9 segundos", "45 segundos", "6 segundos"], correct: 1 }
+    ];
+
+    const atividade6 = [
+        { q: "Uma fábrica de sapatos modelou seu lucro mensal através de \\( L(x) = -x^2 + 10x - 9 \\), onde \\( x \\) é a quantidade de sapatos produzidos (em milhares) e \\( L(x) \\) é o lucro em milhares de reais. Qual a quantidade de sapatos que deve ser produzida para obter o lucro máximo?", options: ["2 mil sapatos", "5 mil sapatos", "9 mil sapatos", "10 mil sapatos"], correct: 1 },
+        { q: "Um jogador de futebol chuta uma bola que descreve uma parábola de equação \\( h(t) = -5t^2 + 20t \\), onde \\( h \\) é a altura em metros e \\( t \\) é o tempo em segundos. Qual é a altura máxima atingida por essa bola?", options: ["10 metros", "20 metros", "40 metros", "2 metros"], correct: 1 },
+        { q: "O custo diário de produção de uma indústria metalúrgica é dado por \\( C(x) = 2x^2 - 40x + 300 \\), onde \\( x \\) é o número de peças fabricadas. Quantas peças devem ser produzidas para que o custo diário seja o menor (mínimo) possível?", options: ["10 peças", "20 peças", "40 peças", "300 peças"], correct: 0 },
+        { q: "Um organizador de eventos percebeu que o faturamento de um show varia de acordo com o preço do ingresso \\( x \\), seguindo a função de receita \\( R(x) = -10x^2 + 800x \\). Qual deve ser o preço do ingresso para que a receita seja máxima?", options: ["R$ 20,00", "R$ 40,00", "R$ 80,00", "R$ 400,00"], correct: 1 },
+        { q: "Em uma câmara de resfriamento laboratorial, a variação da temperatura segue a lei \\( T(t) = t^2 - 6t + 10 \\), onde \\( t \\) é o tempo em horas. Qual é a temperatura mínima atingida por essa câmara?", options: ["-6 °C", "3 °C", "1 °C", "10 °C"], correct: 2 },
+        { q: "Um fazendeiro possui um rolo de cerca e planeja construir um galinheiro retangular aproveitando um muro já existente. A área do terreno cercado é dada por \\( A(x) = -2x^2 + 40x \\). Qual é a área máxima que ele conseguirá delimitar?", options: ["20 m²", "100 m²", "200 m²", "400 m²"], correct: 2 },
+        { q: "Uma loja de eletrônicos estimou que o número de televisores vendidos por mês após uma grande campanha publicitária segue a função \\( V(t) = -3t^2 + 18t + 120 \\), onde \\( t \\) é o tempo em meses. Em qual mês após a campanha o número de vendas atingirá o seu pico (máximo)?", options: ["No 1º mês", "No 3º mês", "No 6º mês", "No 9º mês"], correct: 1 },
+        { q: "Um drone de monitoramento agrícola realiza um voo cuja trajetória vertical é descrita pela função quadrática \\( h(t) = -t^2 + 8t + 20 \\), com \\( h \\) em metros e \\( t \\) em minutos. Qual a altura máxima alcançada pelo drone durante a operação?", options: ["20 metros", "32 metros", "36 metros", "40 metros"], correct: 2 },
+        { q: "A concentração de um medicamento na corrente sanguínea de um paciente, em mg/L, é modelada por \\( C(t) = -0{,}5t^2 + 4t \\), onde \\( t \\) é o tempo medido em horas após a ingestão. Após quantas horas a concentração desse medicamento atinge o seu valor máximo?", options: ["2 horas", "4 horas", "8 horas", "16 horas"], correct: 1 },
+        { q: "O consumo de combustível de um determinado carro (em km/L) varia em função da velocidade \\( v \\) (em km/h) de acordo com a parábola \\( K(v) = -0{,}002v^2 + 0{,}4v - 10 \\). Qual é a velocidade ideal para que o carro atinja a eficiência máxima de consumo?", options: ["80 km/h", "90 km/h", "100 km/h", "110 km/h"], correct: 2 }
+    ];
+
+    let currentQuestions = [];
+    let currentIdx = 0;
+    let score = 0;
+    let hasAnswered = false;
+    let mode = 1;
+
+    window.addEventListener('DOMContentLoaded', () => {
+        if (window.MathJax) MathJax.typesetPromise();
+    });
+
+    function startActivity(type) {
+        mode = type;
+        if (type === 1) currentQuestions = atividade1;
+        else if (type === 2) currentQuestions = atividade2;
+        else if (type === 3) currentQuestions = atividade3;
+        else if (type === 4) currentQuestions = atividade4;
+        else if (type === 5) currentQuestions = atividade5;
+        else currentQuestions = atividade6;
+        
+        currentIdx = 0;
+        score = 0;
+        
+        document.getElementById('menu-screen').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'none';
+        document.getElementById('game-area').style.display = 'flex';
+        
+        let title = "";
+        if (mode === 1) title = "Identifique os Coeficientes \\(\\;(a, b, c)\\)";
+        else if (mode === 2) title = "Identifique a Concavidade \\(\\;(a > 0 \\text{ ou } a < 0)\\)";
+        else if (mode === 3) title = "Calcule o Valor de \\(\\Delta\\) e as Raízes";
+        else if (mode === 4) title = "Questões de Vestibular Selecionadas";
+        else if (mode === 5) title = "Cálculo de Raízes (Contextualizadas)";
+        else title = "Pontos de Máximo e Mínimo (Vértice)";
+        
+        document.getElementById('activity-title').innerHTML = title;
+        if (window.MathJax) MathJax.typesetPromise();
+        
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        hasAnswered = false;
+        document.getElementById('btn-next').disabled = true;
+        document.getElementById('feedback-banner').innerHTML = "";
+        
+        const q = currentQuestions[currentIdx];
+        const totalQ = currentQuestions.length;
+        
+        document.getElementById('progress-text').innerText = `Questão ${currentIdx + 1} de ${totalQ}`;
+        
+        const eqDisplay = document.getElementById('equation-text');
+        if (mode >= 4) {
+            eqDisplay.style.fontSize = "24px";
+            eqDisplay.style.fontWeight = "600";
+        } else {
+            eqDisplay.style.fontSize = "65px";
+            eqDisplay.style.fontWeight = "bold";
+        }
+        
+        eqDisplay.innerHTML = `<div>${q.q}</div>`;
+        
+        const grid = document.getElementById('options-grid');
+        grid.innerHTML = "";
+        grid.className = `options-grid ${mode === 2 ? 'grid-2' : 'grid-4'}`;
+        
+        q.options.forEach((opt, index) => {
+            const btn = document.createElement('div');
+            btn.className = 'option-btn';
+            
+            if (mode >= 4) {
+                btn.style.fontSize = "20px";
+            } else {
+                btn.style.fontSize = "26px";
+            }
+            
+            if (mode === 2) {
+                const icon = document.createElement('div');
+                icon.className = `parabola-icon ${index === 1 ? 'down' : ''}`;
+                btn.appendChild(icon);
+            }
+            
+            const txt = document.createElement('span');
+            txt.innerHTML = opt;
+            btn.appendChild(txt);
+            
+            btn.onclick = () => selectOption(index);
+            grid.appendChild(btn);
+        });
+
+        if (window.MathJax) MathJax.typesetPromise();
+    }
+
+    function selectOption(idx) {
+        if (hasAnswered) return;
+        hasAnswered = true;
+        const q = currentQuestions[currentIdx];
+        const buttons = document.querySelectorAll('.option-btn');
+        const banner = document.getElementById('feedback-banner');
+
+        if (idx === q.correct) {
+            score++;
+            buttons[idx].classList.add('correct');
+            banner.innerHTML = "<span style='color:var(--correct-color)'>✅ CORRETO!</span>";
+        } else {
+            buttons[idx].classList.add('wrong');
+            buttons[q.correct].classList.add('correct');
+            banner.innerHTML = "<span style='color:var(--wrong-color)'>❌ ERRADO!</span>";
+        }
+
+        buttons.forEach(b => b.classList.add('disabled'));
+        document.getElementById('btn-next').disabled = false;
+    }
+
+    function nextQuestion() {
+        currentIdx++;
+        if (currentIdx < currentQuestions.length) loadQuestion();
+        else {
+            document.getElementById('game-area').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'flex';
+            document.getElementById('final-score').innerText = `${score} / ${currentQuestions.length}`;
+        }
+    }
+
+    function voltarMenu() {
+        document.getElementById('game-area').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'none';
+        document.getElementById('menu-screen').style.display = 'flex';
+    }
+</script>
+</body>
+</html>
