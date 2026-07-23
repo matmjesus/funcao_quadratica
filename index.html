@@ -27,38 +27,39 @@
         }
 
         body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            overflow: hidden; font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0; padding: 0; width: 100%; min-height: 100vh;
+            overflow-x: hidden; overflow-y: auto; font-family: 'Segoe UI', Arial, sans-serif;
             background-color: var(--bg-color); color: #000;
             display: flex; justify-content: center; align-items: center;
         }
 
         .container {
-            width: 95vw; height: 95vh; max-width: 1250px; max-height: 880px;
-            display: flex; flex-direction: column; justify-content: center;
-            box-sizing: border-box; padding: 10px; text-align: center;
+            width: 95vw; max-width: 1250px; min-height: 90vh;
+            display: flex; flex-direction: column; justify-content: space-between;
+            box-sizing: border-box; padding: 15px; text-align: center; margin: auto;
         }
 
         /* MENU INICIAL */
-        #menu-screen { display: flex; flex-direction: column; gap: 12px; align-items: center;}
-        .menu-title { font-size: 40px; color: var(--primary-color); margin-bottom: 5px; font-weight: bold; }
+        #menu-screen { display: flex; flex-direction: column; gap: 12px; align-items: center; width: 100%; margin: auto 0; }
+        .menu-title { font-size: 36px; color: var(--primary-color); margin-bottom: 10px; font-weight: bold; line-height: 1.2; }
         .menu-btn {
-            width: 65%; padding: 12px 24px; font-size: 21px; font-weight: bold;
+            width: 100%; max-width: 550px; padding: 14px 24px; font-size: 20px; font-weight: bold;
             color: white; background-color: var(--accent-color);
             border: none; border-radius: 12px; cursor: pointer;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.15); transition: 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15); transition: 0.2s; box-sizing: border-box;
         }
         .menu-btn:hover { transform: scale(1.02); background-color: var(--primary-color); }
 
         /* ÁREA DE JOGO */
-        #game-area { display: none; flex-direction: column; height: 100%; justify-content: space-between; }
-        .header h1 { font-size: 26px; margin: 5px 0; color: var(--primary-color); }
-        .progress-text { font-size: 20px; font-weight: bold; color: #555; }
+        #game-area { display: none; flex-direction: column; min-height: 85vh; justify-content: space-between; width: 100%; }
+        .header h1 { font-size: 26px; margin: 5px 0; color: var(--primary-color); line-height: 1.2; }
+        .progress-text { font-size: 18px; font-weight: bold; color: #555; }
         
         .equation-display {
             background-color: var(--primary-color); color: white;
-            padding: 20px; border-radius: 15px; font-size: 65px; margin-bottom: 10px;
-            display: flex; justify-content: center; align-items: center; min-height: 120px;
+            padding: 20px; border-radius: 15px; font-size: 40px; margin: 10px 0;
+            display: flex; justify-content: center; align-items: center; min-height: 100px;
+            box-sizing: border-box; overflow-x: auto;
         }
         .equation-display > div {
             width: 100%;
@@ -67,40 +68,40 @@
         }
 
         /* GRID DE OPÇÕES */
-        .options-grid { display: grid; gap: 15px; margin-bottom: 15px; flex-grow: 1; }
+        .options-grid { display: grid; gap: 12px; margin-bottom: 15px; flex-grow: 1; }
         .grid-4 { grid-template-columns: 1fr 1fr; }
         .grid-2 { grid-template-columns: 1fr 1fr; }
 
         .option-btn {
-            background-color: var(--option-bg); border: 4px solid #ced4da;
-            border-radius: 15px; font-size: 26px; font-weight: bold;
+            background-color: var(--option-bg); border: 3px solid #ced4da;
+            border-radius: 15px; font-size: 22px; font-weight: bold;
             cursor: pointer; display: flex; flex-direction: column;
             justify-content: center; align-items: center; transition: 0.15s;
-            padding: 10px;
+            padding: 12px; box-sizing: border-box;
         }
         .option-btn.correct { background-color: var(--correct-bg)!important; border-color: var(--correct-color)!important; color: var(--correct-color)!important; }
         .option-btn.wrong { background-color: var(--wrong-bg)!important; border-color: var(--wrong-color)!important; color: var(--wrong-color)!important; }
         .option-btn.disabled { cursor: not-allowed; opacity: 0.8; }
         
-        .delta-text { font-size: 22px; font-weight: normal; margin-top: 5px; color: #333; }
+        .delta-text { font-size: 18px; font-weight: normal; margin-top: 5px; color: #333; }
         .option-btn.correct .delta-text { color: var(--correct-color); }
         .option-btn.wrong .delta-text { color: var(--wrong-color); }
 
-        .feedback-banner { font-size: 32px; font-weight: bold; min-height: 45px; margin-bottom: 5px; }
+        .feedback-banner { font-size: 28px; font-weight: bold; min-height: 40px; margin-bottom: 5px; }
 
         /* ÍCONES DE CONCAVIDADE */
         .parabola-icon { 
-            width: 90px; height: 45px; margin-bottom: 15px; 
-            border: 5px solid currentColor; border-top: none; 
-            border-radius: 0 0 50px 50px; box-sizing: border-box;
+            width: 70px; height: 35px; margin-bottom: 10px; 
+            border: 4px solid currentColor; border-top: none; 
+            border-radius: 0 0 40px 40px; box-sizing: border-box;
         }
         .down { transform: rotate(180deg); }
 
         /* BOTÕES DE NAVEGAÇÃO */
-        .footer { display: flex; justify-content: center; gap: 20px; }
+        .footer { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
         .btn-next {
             background-color: var(--accent-color); color: white; border: none;
-            padding: 15px 40px; font-size: 26px; font-weight: bold;
+            padding: 12px 30px; font-size: 22px; font-weight: bold;
             border-radius: 40px; cursor: pointer; transition: 0.2s;
         }
         .btn-next:disabled { background-color: #dee2e6; color: #adb5bd; cursor: not-allowed; }
@@ -108,14 +109,37 @@
 
         .btn-back {
             background-color: #6c757d; color: white; border: none;
-            padding: 15px 40px; font-size: 26px; font-weight: bold;
+            padding: 12px 30px; font-size: 22px; font-weight: bold;
             border-radius: 40px; cursor: pointer; transition: 0.2s;
         }
         .btn-back:hover { background-color: #495057; }
 
         /* RESULTADOS */
-        #result-screen { display: none; flex-direction: column; gap: 20px; align-items: center;}
-        .final-score { font-size: 100px; font-weight: bold; color: var(--correct-color); }
+        #result-screen { display: none; flex-direction: column; gap: 20px; align-items: center; margin: auto 0; }
+        .final-score { font-size: 80px; font-weight: bold; color: var(--correct-color); }
+
+        /* AJUSTES RESPONSIVOS PARA SMARTPHONES */
+        @media (max-width: 768px) {
+            .container { padding: 10px; min-height: 100vh; }
+            .menu-title { font-size: 24px; }
+            .menu-btn { font-size: 16px; padding: 12px; }
+            .header h1 { font-size: 18px; }
+            .progress-text { font-size: 15px; }
+            
+            .equation-display { padding: 12px; min-height: 80px; border-radius: 10px; }
+            
+            /* Em telas menores, opte por 1 coluna para legibilidade */
+            .grid-4, .grid-2 { grid-template-columns: 1fr; }
+
+            .option-btn { padding: 10px; border-radius: 10px; }
+            .delta-text { font-size: 14px; }
+            .feedback-banner { font-size: 22px; min-height: 30px; }
+
+            .footer { flex-direction: column-reverse; width: 100%; gap: 10px; }
+            .btn-next, .btn-back { width: 100%; padding: 12px; font-size: 18px; }
+            
+            .final-score { font-size: 60px; }
+        }
     </style>
 </head>
 <body>
@@ -142,15 +166,15 @@
         <div id="options-grid" class="options-grid"></div>
 
         <div class="footer">
-            <button class="btn-back" onclick="voltarMenu()">⬅ VOLTAR AO MENU</button>
+            <button class="btn-back" onclick="voltarMenu()">⬅ VOLTAR</button>
             <button class="btn-next" id="btn-next" onclick="nextQuestion()" disabled>AVANÇAR ➔</button>
         </div>
     </div>
 
     <div id="result-screen">
-        <h2 style="font-size: 45px; margin-bottom:0;">Atividade Concluída!</h2>
+        <h2 style="font-size: 32px; margin-bottom:0;">Atividade Concluída!</h2>
         <div class="final-score" id="final-score">0 / 10</div>
-        <button class="menu-btn" style="width: 50%;" onclick="voltarMenu()">VOLTAR AO MENU</button>
+        <button class="menu-btn" style="width: 100%; max-width: 300px;" onclick="voltarMenu()">VOLTAR AO MENU</button>
     </div>
 </div>
 
@@ -164,7 +188,7 @@
         { q: "\\[ f(x) = 2 + 5x - x^2 \\]", options: ["\\( a = 2, \\; b = 5, \\; c = -1 \\)", "\\( a = -1, \\; b = 5, \\; c = 2 \\)", "\\( a = 1, \\; b = 5, \\; c = 2 \\)", "\\( a = -1, \\; b = 2, \\; c = 5 \\)"], correct: 1 },
         { q: "\\[ f(x) = 10x - 2x^2 + 8 \\]", options: ["\\( a = 10, \\; b = -2, \\; c = 8 \\)", "\\( a = -2, \\; b = 8, \\; c = 10 \\)", "\\( a = -2, \\; b = 10, \\; c = 8 \\)", "\\( a = 2, \\; b = 10, \\; c = 8 \\)"], correct: 2 },
         { q: "\\[ f(x) = x^2 + x + 1 \\]", options: ["\\( a = 1, \\; b = 1, \\; c = 1 \\)", "\\( a = 0, \\; b = 1, \\; c = 1 \\)", "\\( a = 1, \\; b = 1, \\; c = 0 \\)", "\\( a = x, \\; b = x, \\; c = 1 \\)"], correct: 0 },
-        { q: "\\[ f(x) = -3x^2 - 5 \\]", options: ["\\( a = -3, \\; b = -5, \\; c = 0 \\)", "\\( a = -3, \\; b = 0, \\; c = -5 \\)", "\\( a = 3, \\; b = 0, \\; c = -5 \\", "\\( a = -3, \\; b = 1, \\; c = -5 \\)"], correct: 1 },
+        { q: "\\[ f(x) = -3x^2 - 5 \\]", options: ["\\( a = -3, \\; b = -5, \\; c = 0 \\)", "\\( a = -3, \\; b = 0, \\; c = -5 \\)", "\\( a = 3, \\; b = 0, \\; c = -5 \\)", "\\( a = -3, \\; b = 1, \\; c = -5 \\)"], correct: 1 },
         { q: "\\[ f(x) = \\frac{1}{2}x^2 - 4x + 12 \\]", options: ["\\( a = 1, \\; b = -4, \\; c = 12 \\)", "\\( a = 5, \\; b = -4, \\; c = 12 \\)", "\\( a = \\frac{1}{2}, \\; b = -4, \\; c = 12 \\)", "\\( a = 12, \\; b = -4, \\; c = \\frac{1}{2} \\)"], correct: 2 }
     ];
 
@@ -280,15 +304,16 @@
         
         const q = currentQuestions[currentIdx];
         const totalQ = currentQuestions.length;
+        const isMobile = window.innerWidth <= 768;
         
         document.getElementById('progress-text').innerText = `Questão ${currentIdx + 1} de ${totalQ}`;
         
         const eqDisplay = document.getElementById('equation-text');
         if (mode >= 4) {
-            eqDisplay.style.fontSize = "24px";
+            eqDisplay.style.fontSize = isMobile ? "18px" : "24px";
             eqDisplay.style.fontWeight = "600";
         } else {
-            eqDisplay.style.fontSize = "65px";
+            eqDisplay.style.fontSize = isMobile ? "32px" : "55px";
             eqDisplay.style.fontWeight = "bold";
         }
         
@@ -303,9 +328,9 @@
             btn.className = 'option-btn';
             
             if (mode >= 4) {
-                btn.style.fontSize = "20px";
+                btn.style.fontSize = isMobile ? "16px" : "20px";
             } else {
-                btn.style.fontSize = "26px";
+                btn.style.fontSize = isMobile ? "18px" : "24px";
             }
             
             if (mode === 2) {
